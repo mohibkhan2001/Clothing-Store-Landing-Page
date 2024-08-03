@@ -1,43 +1,72 @@
+const leftArrow = document.querySelector('.left-arrow');
+const rightArrow = document.querySelector('.right-arrow');
 const slider = document.querySelector('.slider');
 const slides = document.querySelectorAll('.slide');
-const totalSlides = slides.length;
-let currentIndex = 0;
+let index = 0;
 
-document.querySelector('.left-arrow').addEventListener('click', () => {
-    if (currentIndex > 0) {
-        currentIndex--;
-    } else {
-        currentIndex = totalSlides - 1;
-    }
-    updateSlider();
-});
-
-document.querySelector('.right-arrow').addEventListener('click', () => {
-    if (currentIndex < totalSlides - 1) {
-        currentIndex++;
-    } else {
-        currentIndex = 0;
-    }
-    updateSlider();
-});
-
-function updateSlider() {
-    slider.style.transform = `translateX(-${currentIndex * 100}%)`;
-    if (currentIndex === totalSlides - 1) {
-        slides[currentIndex].classList.add('center-product');
-    } else {
-        slides.forEach(slide => slide.classList.remove('center-product'));
-    }
+function updateArrows() {
+  // Disable left arrow if on the first slide
+  leftArrow.disabled = index === 0;
+  
+  // Disable right arrow if on the last slide
+  rightArrow.disabled = index === slides.length - 1;
 }
 
-// Automatically change slide every 5 seconds
+function showSlide(n) {
+  if (n >= slides.length) index = 0;
+  if (n < 0) index = slides.length - 1;
+  slider.style.transform = `translateX(-${index * 100}%)`;
+  
+  // Update arrow states
+  updateArrows();
+}
+
+// Initialize arrows state
+updateArrows();
+
+leftArrow.addEventListener('click', () => {
+  if (index > 0) {
+    index--;
+    showSlide(index);
+  }
+});
+
+rightArrow.addEventListener('click', () => {
+  if (index < slides.length - 1) {
+    index++;
+    showSlide(index);
+  }
+});
+
+// Automatically move to the next slide every 5 seconds
 setInterval(() => {
-    if (currentIndex < totalSlides - 1) {
-        currentIndex++;
-    } else {
-        currentIndex = 0;
-    }
-    updateSlider();
-}, 3000); // 5000 milliseconds = 5 seconds
+  index++;
+  showSlide(index);
+}, 5000);
 
 
+// for hamburger
+
+function toggleNav() {
+  var navList = document.getElementById("nav-list");
+  navList.classList.toggle("active");
+}
+
+
+// search bar
+
+document.addEventListener('DOMContentLoaded', () => {
+  const searchIcon = document.getElementById('search-icon');
+  const searchBar = document.getElementById('search-bar');
+  const searchClose = document.getElementById('search-close');
+
+  searchIcon.addEventListener('click', () => {
+      searchBar.classList.toggle('visible');
+      searchBar.classList.toggle('hidden');
+  });
+
+  searchClose.addEventListener('click', () => {
+      searchBar.classList.add('hidden');
+      searchBar.classList.remove('visible');
+  });
+});
